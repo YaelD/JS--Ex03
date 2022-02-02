@@ -2,13 +2,14 @@ class Register extends React.Component {
 
     constructor(props) {
       super(props);
-      this.state = {email: '', password: '', name: ''};
+      this.state = {email: '', password: '', name: '', warning_visable : false};
   
       this.handleChangeEmail = this.handleChangeEmail.bind(this);
       this.handleChangePassword = this.handleChangePassword.bind(this);
       this.handleChangeName = this.handleChangeName.bind(this);
       this.handle_add = this.handle_add.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.checkValidation = this.checkValidation.bind(this);
     }
 
     handleChangeName(event){
@@ -24,22 +25,26 @@ class Register extends React.Component {
     }
   
     async handleSubmit(event) {
-      await this.handle_add();
-      // if(checkValidation()){
-        
-      // }
-      // else{
-        
-      // }
-      //event.preventDefault();
+      if(this.checkValidation()){
+        await this.handle_add();
+        this.update_state(this.state.email, this.state.password, this.state.name, false);
+      }
+      else{
+        this.update_state(this.state.email, this.state.password, this.state.name, true);
+      }
+      event.preventDefault();
     }
 
-    update_state(email, password, name){
-        this.setState({ email : email, password : password, name : name});
+    update_state(email, password, name, wranning_visible){
+        this.setState({ email : email, password : password, name : name, warning_visable : wranning_visible});
     }
 
     checkValidation(){
-      return true;
+      console.log("State=", this.state);
+      if(this.state.email!='' && this.state.name != '' && this.state.password != ''){
+        return true;
+      }
+      return false;
     }
 
     async handle_add( )
@@ -63,7 +68,7 @@ class Register extends React.Component {
     render() {
       return (
         <div>
-                  <form >
+            <form onSubmit = { this.handleSubmit}>
             <br/>
             <label>
             Full name:
@@ -85,10 +90,9 @@ class Register extends React.Component {
           <br/>
           <input type="submit" value="Register"/>
         </form>
-          <div>
-          <button className='AddButton'  
-				onClick={this.handle_add}>Add User</button>
-          </div>
+        <label className = {this.state.warning_visable ? "errorVisible" : "errorInvisible"}>
+          Error! You should fill all the fields
+        </label>
         </div>
 
       );
