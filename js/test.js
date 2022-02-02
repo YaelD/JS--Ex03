@@ -18,15 +18,19 @@ class NameForm extends React.Component {
 
   render() {
     return React.createElement(
-      'form',
-      { onSubmit: this.handleSubmit },
+      'div',
+      null,
       React.createElement(
-        'label',
-        null,
-        'Name:',
-        React.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange })
-      ),
-      React.createElement('input', { type: 'submit', value: 'Submit' })
+        'form',
+        { onSubmit: this.handleSubmit },
+        React.createElement(
+          'label',
+          null,
+          'Name:',
+          React.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange })
+        ),
+        React.createElement('input', { type: 'submit', value: 'Submit' })
+      )
     );
   }
 }

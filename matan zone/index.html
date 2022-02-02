@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>wanna be Facebook</title>
+	<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+	<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+	<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
+	<script src="js/homepage_container.js"></script>
+	<script src="js/login.js"></script>
+	<script src="js/register.js"></script>
+	<script src="js/test.js"></script>
+
+
+	<link rel="stylesheet" type='text/css' href="css/style.css">
+	
+</head>
+
+<body>
+
+	<h1>wanna be Facebook<h1>
+
+	<div id='sample-container'></id>
+
+</body>
+
+<script>
+
+const login = React.createElement(Login);
+const register = React.createElement(Register);
+const admin = React.createElement(NameForm);
+
+const domContainer = document.querySelector('#sample-container');
+ReactDOM.render( React.createElement(Container,{homePage:login, messagePage:register, adminPage:admin}), domContainer);
+
+</script>
+
+
+</html>

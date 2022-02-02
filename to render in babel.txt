@@ -1,1 +1,1 @@
- npx babel --presets react test.js --out-dir .\js
+ npx babel --presets react homepage_container.js --out-dir .\js
