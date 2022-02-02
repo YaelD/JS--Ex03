@@ -7,6 +7,7 @@ class Register extends React.Component {
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
+    this.handle_add = this.handle_add.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -22,45 +23,74 @@ class Register extends React.Component {
     this.update_state(this.state.email, event.target.value, this.state.name);
   }
 
-  handleSubmit(event) {
-    alert('The user ' + this.state.email + ' registered successfully');
-    event.preventDefault();
+  async handleSubmit(event) {
+    await this.handle_add();
+    
+    // if(checkValidation()){
+
+    // }
+    // else{
+
+    // }
+    //event.preventDefault();
   }
 
   update_state(email, password, name) {
     this.setState({ email: email, password: password, name: name });
   }
 
+  checkValidation() {
+    return true;
+  }
+
+  async handle_add() {
+    const response = await fetch('http://localhost:2718/social_network/users/register', { method: 'POST',
+      body: JSON.stringify({ name: this.state.name, password: this.state.password, email: this.state.email }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (response.status == 200) {
+      alert('The user ' + this.state.email + ' registered successfully');
+    } else {
+      const err = await response.text();
+      alert(err);
+    }
+  }
+
   render() {
     return React.createElement(
-      'form',
-      { onSubmit: this.handleSubmit },
-      React.createElement('br', null),
+      'div',
+      null,
       React.createElement(
-        'label',
-        null,
-        'Full name:',
-        React.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleChangeName })
+        'form',
+        { onSubmit: this.handleSubmit },
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Full name:',
+          React.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleChangeName })
+        ),
+        React.createElement('br', null),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Email:',
+          React.createElement('input', { type: 'email', value: this.state.email, onChange: this.handleChangeEmail })
+        ),
+        React.createElement('br', null),
+        React.createElement('br', null),
+        React.createElement(
+          'label',
+          null,
+          'Password:',
+          React.createElement('input', { type: 'password', value: this.state.password, onChange: this.handleChangePassword })
+        ),
+        React.createElement('br', null),
+        React.createElement('br', null),
+        React.createElement('input', { type: 'submit', value: 'Register' })
       ),
-      React.createElement('br', null),
-      React.createElement('br', null),
-      React.createElement(
-        'label',
-        null,
-        'Email:',
-        React.createElement('input', { type: 'email', value: this.state.email, onChange: this.handleChangeEmail })
-      ),
-      React.createElement('br', null),
-      React.createElement('br', null),
-      React.createElement(
-        'label',
-        null,
-        'Password:',
-        React.createElement('input', { type: 'password', value: this.state.password, onChange: this.handleChangePassword })
-      ),
-      React.createElement('br', null),
-      React.createElement('br', null),
-      React.createElement('input', { type: 'submit', value: 'Register' })
+      React.createElement('div', null)
     );
   }
 }

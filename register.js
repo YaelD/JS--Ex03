@@ -7,6 +7,7 @@ class Register extends React.Component {
       this.handleChangeEmail = this.handleChangeEmail.bind(this);
       this.handleChangePassword = this.handleChangePassword.bind(this);
       this.handleChangeName = this.handleChangeName.bind(this);
+      this.handle_add = this.handle_add.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -23,23 +24,27 @@ class Register extends React.Component {
     }
   
     async handleSubmit(event) {
-      if(checkValidation()){
-        await this.handle_add()
+      await this.handle_add();
+      // if(checkValidation()){
         
-      }
-      else{
+      // }
+      // else{
         
-      }
-      event.preventDefault();
+      // }
+      //event.preventDefault();
     }
 
     update_state(email, password, name){
         this.setState({ email : email, password : password, name : name});
     }
 
+    checkValidation(){
+      return true;
+    }
+
     async handle_add( )
     {
-      const response = await fetch('/users/register' , 
+      const response = await fetch('http://localhost:2718/social_network/users/register' , 
                 {method:'POST', 
                  body: JSON.stringify( {name: this.state.name, password : this.state.password, email : this.state.email}), 
                    headers: { 'Content-Type': 'application/json' }
