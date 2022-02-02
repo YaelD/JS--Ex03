@@ -43,9 +43,12 @@ class Register extends React.Component {
   }
 
   async handle_add() {
-    const response = await fetch('http://localhost:2718/social_network/users/register', { method: 'POST',
+    console.log("send", this.state);
+    const response = await fetch('http://localhost:2718/social_network/users/register', 
+    { method: 'POST',
       body: JSON.stringify({ name: this.state.name, password: this.state.password, email: this.state.email }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json'
+       }
     });
     if (response.status == 200) {
       alert('The user ' + this.state.email + ' registered successfully');
