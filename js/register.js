@@ -25,7 +25,6 @@ class Register extends React.Component {
 
   async handleSubmit(event) {
     await this.handle_add();
-    
     // if(checkValidation()){
 
     // }
@@ -62,35 +61,37 @@ class Register extends React.Component {
       null,
       React.createElement(
         'form',
-        { onSubmit: this.handleSubmit },
-        React.createElement('br', null),
+        null,
         React.createElement(
           'label',
           null,
           'Full name:',
           React.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleChangeName })
         ),
-        React.createElement('br', null),
-        React.createElement('br', null),
         React.createElement(
           'label',
           null,
           'Email:',
           React.createElement('input', { type: 'email', value: this.state.email, onChange: this.handleChangeEmail })
         ),
-        React.createElement('br', null),
-        React.createElement('br', null),
         React.createElement(
           'label',
           null,
           'Password:',
           React.createElement('input', { type: 'password', value: this.state.password, onChange: this.handleChangePassword })
         ),
-        React.createElement('br', null),
-        React.createElement('br', null),
         React.createElement('input', { type: 'submit', value: 'Register' })
       ),
-      React.createElement('div', null)
+      React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'button',
+          { className: 'AddButton',
+            onClick: this.handle_add },
+          'Add User'
+        )
+      )
     );
   }
 }

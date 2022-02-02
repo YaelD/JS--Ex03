@@ -63,32 +63,34 @@ class Register extends React.Component {
     render() {
       return (
         <div>
-        <form onSubmit={this.handleSubmit}>
-            <br/>
+                  <form >
+            {/* <br/> */}
             <label>
             Full name:
             <input type="text" value={this.state.name} onChange={this.handleChangeName} />
           </label>
-          <br/>
-          <br/>
+          {/* <br/>
+          <br/> */}
           <label>
           Email:
             <input type="email" value={this.state.email} onChange={this.handleChangeEmail} />
           </label>
-          <br/>
-          <br/>
+          {/* <br/>
+          <br/> */}
           <label>
           Password:
             <input type="password" value={this.state.password} onChange={this.handleChangePassword} />
           </label>
-          <br/>
-          <br/>
+          {/* <br/>
+          <br/> */}
           <input type="submit" value="Register"/>
         </form>
-        <div>
+          <div>
+          <button className='AddButton'  
+				onClick={this.handle_add}>Add User</button>
+          </div>
+        </div>
 
-        </div>
-        </div>
       );
     }
   }

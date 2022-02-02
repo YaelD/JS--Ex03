@@ -1,1 +1,1 @@
- npx babel --presets react ReactButtons.js --out-dir .\js
+ npx babel --presets react test.js --out-dir .\js
