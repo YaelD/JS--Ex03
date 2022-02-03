@@ -1,43 +1,55 @@
-class Container extends React.Component{
+class HomePage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             HOME_PAGE : "home",
             MESSAGE_PAGE : "message",
             ADMIN_PAGE : "admin",
-            home_page: props.homePage,
-            messages : props.messagePage,
-            admin_page : props.adminPage,
-            current_page: props.homePage
+            token : props.token,
+            currPage : "home"
         };
         this.renderPage = this.renderPage.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
         this.handleAdmin = this.handleAdmin.bind(this);
 
+        console.log("in HOME PAGE C'TOR", this);
+
     }
 
     renderPage(page){
         if(page == this.state.MESSAGE_PAGE){
-            this.setState({current_page: this.state.messages});
+            return this.renderMessages();
         }
         else if(page == this.state.HOME_PAGE){
-            this.setState({current_page: this.state.home_page});
+            return this.renderPosts();
         }
         else if(page == this.state.ADMIN_PAGE){
-            this.setState({current_page: this.state.admin_page})
+            return this.renderAdmin();
         }
     }
 
     handleHome(){
-        this.renderPage(this.state.HOME_PAGE);
+        this.setState({currPage: this.state.HOME_PAGE});
     }
     handleMessage(){
-        this.renderPage(this.state.MESSAGE_PAGE);
+        this.setState({currPage: this.state.MESSAGE_PAGE});
     }
 
     handleAdmin(){
-        this.renderPage(this.state.ADMIN_PAGE);
+        this.setState({currPage: this.state.ADMIN_PAGE});
+    }
+
+    renderAdmin(){
+        //TODO
+    }
+
+    renderMessages(){
+        //TODO
+    }
+
+    renderPosts(){
+        //TODO
     }
 
     render(){
@@ -49,12 +61,10 @@ class Container extends React.Component{
                 <button onClick={this.handleAdmin}> Admin</button>     
             </div>
             <div>
-                {this.state.current_page}
+                {this.renderPage(this.state.currPage)}
             </div>
         </div>
         );
     }
-
-
-
 }
+

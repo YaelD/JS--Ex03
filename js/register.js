@@ -7,7 +7,6 @@ class Register extends React.Component {
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
-    this.handle_add = this.handle_add.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
   }
@@ -25,13 +24,13 @@ class Register extends React.Component {
   }
 
   async handleSubmit(event) {
+    event.preventDefault();
     if (this.checkValidation()) {
-      await this.handle_add();
       this.update_state(this.state.email, this.state.password, this.state.name, false);
+      this.props.onRegister(this.state.name, this.state.email, this.state.password);
     } else {
       this.update_state(this.state.email, this.state.password, this.state.name, true);
     }
-    event.preventDefault();
   }
 
   update_state(email, password, name, wranning_visible) {
@@ -44,19 +43,6 @@ class Register extends React.Component {
       return true;
     }
     return false;
-  }
-
-  async handle_add() {
-    const response = await fetch('http://localhost:2718/social_network/users/register', { method: 'POST',
-      body: JSON.stringify({ name: this.state.name, password: this.state.password, email: this.state.email }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-    if (response.status == 200) {
-      alert('The user ' + this.state.email + ' registered successfully');
-    } else {
-      const err = await response.text();
-      alert(err);
-    }
   }
 
   render() {
