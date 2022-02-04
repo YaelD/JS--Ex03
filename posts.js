@@ -19,7 +19,7 @@ class Post extends React.Component
 }
 
 //-----------------------------------------------------------------------------------------
-class Posts extends React.Component 
+class PostList extends React.Component 
 {
 	constructor(props) 
 	{
@@ -134,7 +134,7 @@ class PostPage extends React.Component
          				 Please write something in the post
         			</label>
 					<div>
-						<Posts handle_get_posts = {this.handle_get_posts} posts = {this.state.posts}/>
+						<PostList handle_get_posts = {this.handle_get_posts} posts = {this.state.posts}/>
 					</div>
 				  </div>
 
