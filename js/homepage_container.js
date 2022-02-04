@@ -6,14 +6,13 @@ class HomePage extends React.Component {
             MESSAGE_PAGE: "message",
             ADMIN_PAGE: "admin",
             token: props.token,
-            currPage: "home"
+            currPage: "home",
+            userDetails: props.user
         };
         this.renderPage = this.renderPage.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
         this.handleAdmin = this.handleAdmin.bind(this);
-
-        console.log("in HOME PAGE C'TOR", this);
     }
 
     renderPage(page) {
@@ -42,11 +41,15 @@ class HomePage extends React.Component {
     }
 
     renderMessages() {
-        //TODO
+        return React.createElement(MessagePage, { token: this.state.token });
     }
 
     renderPosts() {
-        //TODO
+        return React.createElement(
+            PostPage,
+            { token: this.state.token },
+            " "
+        );
     }
 
     render() {
@@ -66,10 +69,14 @@ class HomePage extends React.Component {
                     { onClick: this.handleMessage },
                     " Messages"
                 ),
-                React.createElement(
+                this.state.userDetails.id == 0 ? React.createElement(
                     "button",
                     { onClick: this.handleAdmin },
                     " Admin"
+                ) : React.createElement(
+                    "div",
+                    null,
+                    " "
                 )
             ),
             React.createElement(

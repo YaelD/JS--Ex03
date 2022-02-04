@@ -6,8 +6,8 @@ class ReactContainer extends React.Component{
             LOGIN : "login",
             REGISTER : "register",
             HOME_PAGE : "homePage",
-            currPage : "login"
-            
+            currPage : "login",
+            user : null
         }
         this.renderLogin = this.renderLogin.bind(this);
         this.renderRegister = this.renderRegister.bind(this);
@@ -48,11 +48,13 @@ class ReactContainer extends React.Component{
           headers: { 'Content-Type': 'application/json' }
         });
         if (response.status == 200) {
+             
           const curr_token = JSON.parse(response.headers.get("Authorization")).token;
           this.setState(
             {
-                currPage: this.state.HOME_PAGE,
-                token : curr_token
+                token : curr_token,
+                user: await response.json(),
+                currPage : this.state.HOME_PAGE
             } );
         } else {
           const err = await response.text();
@@ -77,7 +79,7 @@ class ReactContainer extends React.Component{
             
         return (
         <div>
-        <HomePage token = {this.state.token}></HomePage>
+        <HomePage token = {this.state.token} user = {this.state.user}></HomePage>
        </div>
         );
     }

@@ -65,7 +65,7 @@ class MessageList extends React.Component {
 class MessagePage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { text_message: '', messagesList: [], token: '85c5471efb7fa8', warning_visable: false, usersList: [], selected_user: '' };
+		this.state = { text_message: '', messagesList: [], token: this.props.token, warning_visable: false, usersList: [], selected_user: '' };
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -79,11 +79,11 @@ class MessagePage extends React.Component {
 	async componentDidMount() {
 		const messages = await this.handle_get_messages();
 		const users = await this.handle_get_all_users();
-		this.update_state(this.state.text_message, messages, this.state.token, this.state.warning_visable, users);
+		this.setState({ selected_user: users[0].id, messagesList: messages, usersList: users });
 	}
 
 	handleChange(event) {
-		this.update_state(event.target.value, this.state.messagesList, this.state.token, false, this.state.usersList);
+		this.setState({ text_message: event.target.value, warning_visable: false });
 	}
 
 	handleSubmit(event) {
@@ -141,7 +141,6 @@ class MessagePage extends React.Component {
 	}
 
 	render() {
-		console.log(this.state.usersList);
 		return React.createElement(
 			'div',
 			null,

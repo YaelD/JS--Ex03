@@ -6,15 +6,13 @@ class HomePage extends React.Component{
             MESSAGE_PAGE : "message",
             ADMIN_PAGE : "admin",
             token : props.token,
-            currPage : "home"
+            currPage : "home",
+            userDetails : props.user
         };
         this.renderPage = this.renderPage.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
         this.handleAdmin = this.handleAdmin.bind(this);
-
-        console.log("in HOME PAGE C'TOR", this);
-
     }
 
     renderPage(page){
@@ -45,11 +43,11 @@ class HomePage extends React.Component{
     }
 
     renderMessages(){
-        //TODO
+        return (<MessagePage token = {this.state.token}></MessagePage>)
     }
 
     renderPosts(){
-        //TODO
+        return (<PostPage token = {this.state.token}> </PostPage>);
     }
 
     render(){
@@ -58,7 +56,7 @@ class HomePage extends React.Component{
             <div className = "topMenu">
                 <button onClick={this.handleHome}> Home</button>
                 <button onClick={this.handleMessage}> Messages</button>
-                <button onClick={this.handleAdmin}> Admin</button>     
+                {  this.state.userDetails.id == 0 ? <button onClick={this.handleAdmin}> Admin</button> : <div> </div>}  
             </div>
             <div>
                 {this.renderPage(this.state.currPage)}

@@ -33,7 +33,7 @@ class Post extends React.Component {
 }
 
 //-----------------------------------------------------------------------------------------
-class Posts extends React.Component {
+class PostList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.handle_get_posts = this.handle_get_posts.bind(this);
@@ -65,7 +65,7 @@ class Posts extends React.Component {
 class PostPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { text_post: '', posts: [], token: '6c42b5e236c24a', warning_visable: false };
+		this.state = { text_post: '', posts: [], token: this.props.token, warning_visable: false };
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -145,7 +145,7 @@ class PostPage extends React.Component {
 			React.createElement(
 				'div',
 				null,
-				React.createElement(Posts, { handle_get_posts: this.handle_get_posts, posts: this.state.posts })
+				React.createElement(PostList, { handle_get_posts: this.handle_get_posts, posts: this.state.posts })
 			)
 		);
 	}

@@ -54,7 +54,7 @@ class PostPage extends React.Component
 	constructor(props) 
 	{
 		super(props);
-		this.state = {text_post : '', posts: [], token: '6c42b5e236c24a', warning_visable : false};
+		this.state = {text_post : '', posts: [], token: this.props.token, warning_visable : false};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);	
