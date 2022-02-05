@@ -103,6 +103,7 @@ class UsersList extends React.Component {
             users: this.props.users, // this is not working like that
             users_status: 'created',
             selected_users_by_status: [],
+            selected_user_name: '',
             selected_user: '',
             warning_visable: false
         };
@@ -126,17 +127,18 @@ class UsersList extends React.Component {
                 selected_users_arr.push(this.props.users[i]);
             }
         }
-        console.log(selected_users_arr);
         return selected_users_arr;
     }
 
     handleChangeSelectedUser(event) {
-        this.setState({ selected_user: event.target.value, warning_visable: false });
+        console.log(event.target.value);
+        this.setState({ selected_user_name: event.target.value, warning_visable: false });
     }
 
-    handleSubmit() {
-        // event.preventDefault();
-        if (this.state.selected_user != '') {
+    handleSubmit() {}
+
+    renderUser() {
+        if (this.state.selected_user_name != '') {
             return React.createElement(
                 "div",
                 null,
@@ -144,13 +146,13 @@ class UsersList extends React.Component {
                     UserData,
                     null,
                     "user = ",
-                    this.state.selected_user,
+                    this.state.selected_user_name,
                     " onStatusChange = ",
                     this.onStatusChange
                 )
             );
         } else {
-            this.setState({ warning_visable: true });
+            return '';
         }
     }
 
@@ -218,7 +220,9 @@ class UsersList extends React.Component {
                 "label",
                 { className: this.state.warning_visable ? "errorVisible" : "errorInvisible" },
                 "Please choose a user"
-            )
+            ),
+            this.renderUser(),
+            ";"
         );
     }
 }
@@ -311,7 +315,6 @@ class AdminPage extends React.Component {
         if (response.status == 200) {
             const users_arr = await response.json();
             this.setState({ users: users_arr });
-            console.log(users_arr);
         } else {
             const err = await response.text();
             alert(err);

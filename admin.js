@@ -82,17 +82,15 @@ class UsersList extends React.Component{
                 selected_users_arr.push(this.props.users[i]);
             }
         }
-        //console.log(selected_users_arr);
         return selected_users_arr;
     }
 
     handleChangeSelectedUser(event){
         console.log(event.target.value);
-        this.setState({selected_user : event.target.value, warning_visable : false}); 
+        this.setState({selected_user_name : event.target.value, warning_visable : false}); 
     }
 
     handleSubmit(){
-        this.props.users.
     }
 
     renderUser(){
@@ -247,7 +245,6 @@ class AdminPage extends React.Component{
         {
             const users_arr = await response.json();
             this.setState({users : users_arr});
-            console.log(users_arr);
         }
         else 
         {
