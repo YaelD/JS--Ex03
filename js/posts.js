@@ -66,7 +66,6 @@ class PostPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { text_post: '', posts: [], token: this.props.token, warning_visable: false };
-
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.update_state = this.update_state.bind(this);
@@ -77,6 +76,14 @@ class PostPage extends React.Component {
 	async componentDidMount() {
 		const posts = await this.handle_get_posts();
 		this.update_state(this.state.text_post, posts, this.state.token, this.state.warning_visable);
+	}
+
+	async componentDidUpdate(prevProps) {
+		if (prevProps.isRefreshed != this.props.isRefreshed) {
+			console.log("in componenet did Update");
+			const data = await this.handle_get_posts();
+			this.setState({ posts: data });
+		}
 	}
 
 	handleChange(event) {
@@ -98,6 +105,7 @@ class PostPage extends React.Component {
 			headers: { 'Content-Type': 'application/json', 'Authorization': this.state.token }
 		});
 		if (response.status == 200) {
+			this.props.onHide();
 			const posts = await this.handle_get_posts();
 			this.update_state('', posts, this.state.token, false);
 		} else {
@@ -114,7 +122,6 @@ class PostPage extends React.Component {
 			throw new Error('Error while fetching posts');
 		}
 		const data = await response.json();
-		this.props.onHide();
 		return data.slice(0, 10);
 	}
 

@@ -65,7 +65,15 @@ class MessageList extends React.Component {
 class MessagePage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { text_message: '', messagesList: [], token: this.props.token, warning_visable: false, usersList: [], selected_user: '' };
+		this.state = {
+			curr_user_id: this.props.userId,
+			text_message: '',
+			messagesList: [],
+			token: this.props.token,
+			warning_visable: false,
+			usersList: [],
+			selected_user: ''
+		};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -80,6 +88,16 @@ class MessagePage extends React.Component {
 		const messages = await this.handle_get_messages();
 		const users = await this.handle_get_all_users();
 		this.setState({ selected_user: users[0].id, messagesList: messages, usersList: users });
+	}
+
+	async componentDidUpdate(prevProps) {
+		if (prevProps.isRefreshed != this.props.isRefreshed) {
+			this.props.onHide();
+			console.log("in Message componenet did Update");
+			const messages = await this.handle_get_messages();
+			const newUsers = await this.handle_get_all_users();
+			this.setState({ messagesList: messages, usersList: newUsers });
+		}
 	}
 
 	handleChange(event) {
@@ -116,7 +134,7 @@ class MessagePage extends React.Component {
 			throw new Error('Error while fetching messages');
 		}
 		const data = await response.json();
-		return data;
+		return data.slice(0, 10);
 	}
 
 	async handle_get_all_users() {
@@ -127,9 +145,8 @@ class MessagePage extends React.Component {
 			throw new Error('Error while fetching messages');
 		}
 		const users = await response.json();
-		console.log(users);
-
-		return users;
+		const temp_users = users.filter(temp_user => temp_user.id != this.props.userId);
+		return temp_users;
 	}
 
 	handleChangeUserName(event) {

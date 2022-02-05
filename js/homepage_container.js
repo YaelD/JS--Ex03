@@ -15,7 +15,7 @@ class HomePage extends React.Component {
 
             numOfMessages: 0,
             newMessageNotification: '',
-
+            isNewMessages: false,
             messagesIntervalID: 0
         };
         this.renderPage = this.renderPage.bind(this);
@@ -26,21 +26,24 @@ class HomePage extends React.Component {
         this.getNumOfMessages = this.getNumOfMessages.bind(this);
         this.calcNumOfPosts = this.calcNumOfPosts.bind(this);
         this.hidePostsNotification = this.hidePostsNotification.bind(this);
+        this.calcNumOfMessages = this.calcNumOfMessages.bind(this);
+        this.hideMessagesNotification = this.hideMessagesNotification.bind(this);
     }
 
     async componentDidMount() {
         this.setState({ numOfPosts: await this.getNumOfPosts() });
+        this.setState({ numOfMessages: await this.getNumOfMessages() });
         const postInterval = setInterval(this.calcNumOfPosts, 3000);
-        // const messagesInterval = setInterval(this.getNumOfMessages, 30000);
+        const messagesInterval = setInterval(this.calcNumOfMessages, 3000);
         this.setState({
-            postsIntervalID: postInterval
-            // messagesIntervalID : messagesInterval
+            postsIntervalID: postInterval,
+            messagesIntervalID: messagesInterval
         });
     }
 
     async calcNumOfPosts() {
         const serverNumOfPosts = await this.getNumOfPosts();
-        console.log("In calcNumOfPosts" + serverNumOfPosts + " " + this.state.numOfPosts);
+        //console.log("In calcNumOfPosts" + serverNumOfPosts + " " + this.state.numOfPosts);
         if (serverNumOfPosts > this.state.numOfPosts) {
             this.setState({
                 newPostNotification: "There new posts!",
@@ -49,10 +52,28 @@ class HomePage extends React.Component {
         }
     }
 
+    async calcNumOfMessages() {
+        const serverNumOfMessages = await this.getNumOfMessages();
+        console.log("In calcNumOfMessages" + serverNumOfMessages + " " + this.state.numOfMessages);
+        if (serverNumOfMessages > this.state.numOfMessages) {
+            this.setState({
+                newMessageNotification: "There are new Messages!",
+                numOfMessages: serverNumOfMessages
+            });
+        }
+    }
+
     hidePostsNotification() {
         this.setState({
             newPostNotification: "",
             numOfPosts: this.state.numOfPosts + 1
+        });
+    }
+
+    hideMessagesNotification() {
+        this.setState({
+            newMessageNotification: "",
+            numOfMessages: this.state.numOfMessages + 1
         });
     }
 
@@ -80,13 +101,9 @@ class HomePage extends React.Component {
             throw new Error('Error while fetching messages');
         }
         const data = await response.json();
-        if (data.length > this.state.numOfMessages) {
-            this.setState({
-                numOfMessages: data.length,
-                newMessage: 'You have new Messages'
-            });
-        }
+        return data.length;
     }
+
     renderPage(page) {
         if (page == this.state.MESSAGE_PAGE) {
             return this.renderMessages();
@@ -105,7 +122,12 @@ class HomePage extends React.Component {
         });
     }
     handleMessage() {
-        this.setState({ currPage: this.state.MESSAGE_PAGE });
+        this.setState({
+            currPage: this.state.MESSAGE_PAGE,
+            newMessageNotification: '',
+            isNewMessages: !this.state.isNewMessages
+
+        });
     }
 
     handleAdmin() {
@@ -117,13 +139,13 @@ class HomePage extends React.Component {
     }
 
     renderMessages() {
-        return React.createElement(MessagePage, { token: this.state.token });
+        return React.createElement(MessagePage, { userId: this.state.userDetails.id, token: this.state.token, onHide: this.hideMessagesNotification, isRefreshed: this.state.isNewMessages });
     }
 
     renderPosts() {
         return React.createElement(
             PostPage,
-            { token: this.state.token, onHide: this.hidePostsNotification },
+            { token: this.state.token, onHide: this.hidePostsNotification, isRefreshed: this.state.isNewPosts },
             " "
         );
     }
@@ -161,6 +183,11 @@ class HomePage extends React.Component {
                         "label",
                         null,
                         this.state.newPostNotification
+                    ),
+                    React.createElement(
+                        "label",
+                        null,
+                        this.state.newMessageNotification
                     )
                 )
             ),
