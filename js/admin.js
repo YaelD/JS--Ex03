@@ -7,7 +7,6 @@ class UserData extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        this.setState({ status: this.props.user.status });
     }
 
     handleChange(event) {
@@ -103,7 +102,7 @@ class UsersList extends React.Component {
             users: this.props.users, // this is not working like that
             users_status: 'created',
             selected_users_by_status: [],
-            selected_user_name: '',
+            selected_user_id: '',
             selected_user: '',
             warning_visable: false
         };
@@ -113,6 +112,7 @@ class UsersList extends React.Component {
         this.handleChangeUserStatus = this.handleChangeUserStatus.bind(this);
         this.getAllUsersWithCurrStatus = this.getAllUsersWithCurrStatus.bind(this);
         this.onStatusChange = this.onStatusChange.bind(this);
+        this.renderUser = this.renderUser.bind(this);
     }
 
     handleChangeUserStatus(event) {
@@ -131,19 +131,30 @@ class UsersList extends React.Component {
     }
 
     handleChangeSelectedUser(event) {
-        console.log(event.target.value);
-        this.setState({ selected_user: event.target.value, warning_visable: false });
+        this.setState({ selected_user_id: event.target.value, warning_visable: false });
     }
 
-    handleSubmit() {}
+    handleSubmit() {
+        const user = this.props.users.find(user => user.id == this.state.selected_user_id);
+        console.log(user);
+        this.setState({ selected_user: user });
+    }
 
     renderUser() {
-        if (this.state.selected_user_name != '') {
-            // return (
-            //     // <div>
-            //     // <UserData>user = {this.state.selected_user_name} onStatusChange = {this.onStatusChange}</UserData>
-            //     // </div>
-            // );
+        if (this.state.selected_user != '') {
+            console.log(this.state.selected_user);
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    UserData,
+                    null,
+                    "user = ",
+                    this.state.selected_user,
+                    " onStatusChange = ",
+                    this.onStatusChange
+                )
+            );
         } else {
             return '';
         }
@@ -195,7 +206,7 @@ class UsersList extends React.Component {
             ),
             React.createElement(
                 "select",
-                { value: this.state.selected_users_by_status[0], onChange: this.handleChangeSelectedUser },
+                { value: this.state.selected_user_id, onChange: this.handleChangeSelectedUser },
                 this.state.selected_users_by_status.map((user, index) => {
                     return React.createElement(
                         "option",
