@@ -57,6 +57,7 @@ class UsersList extends React.Component{
             users : this.props.users, // this is not working like that
             users_status : 'created', 
             selected_users_by_status : [],
+            selected_user_name : '',
             selected_user : '', 
             warning_visable : false
         }
@@ -81,25 +82,29 @@ class UsersList extends React.Component{
                 selected_users_arr.push(this.props.users[i]);
             }
         }
-        console.log(selected_users_arr);
+        //console.log(selected_users_arr);
         return selected_users_arr;
     }
 
     handleChangeSelectedUser(event){
+        console.log(event.target.value);
         this.setState({selected_user : event.target.value, warning_visable : false}); 
     }
 
     handleSubmit(){
-        // event.preventDefault();
-        if(this.state.selected_user != ''){
+        this.props.users.
+    }
+
+    renderUser(){
+        if(this.state.selected_user_name != ''){
             return (
                 <div>
-                <UserData>user = {this.state.selected_user} onStatusChange = {this.onStatusChange}</UserData>
+                <UserData>user = {this.state.selected_user_name} onStatusChange = {this.onStatusChange}</UserData>
                 </div>
             );
         }
         else{
-            this.setState({warning_visable : true});
+            return '';
         }
     }
 
@@ -130,6 +135,7 @@ class UsersList extends React.Component{
                 <label className = {this.state.warning_visable ? "errorVisible" : "errorInvisible"}>
          			Please choose a user
         		</label>                        
+                {this.renderUser()};
             </form>
         );                     
     }
