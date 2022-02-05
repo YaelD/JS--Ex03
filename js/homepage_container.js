@@ -135,7 +135,7 @@ class HomePage extends React.Component {
     }
 
     renderAdmin() {
-        //TODO
+        return React.createElement(AdminPage, { token: this.state.token });
     }
 
     renderMessages() {
