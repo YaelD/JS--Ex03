@@ -132,25 +132,18 @@ class UsersList extends React.Component {
 
     handleChangeSelectedUser(event) {
         console.log(event.target.value);
-        this.setState({ selected_user_name: event.target.value, warning_visable: false });
+        this.setState({ selected_user: event.target.value, warning_visable: false });
     }
 
     handleSubmit() {}
 
     renderUser() {
         if (this.state.selected_user_name != '') {
-            return React.createElement(
-                "div",
-                null,
-                React.createElement(
-                    UserData,
-                    null,
-                    "user = ",
-                    this.state.selected_user_name,
-                    " onStatusChange = ",
-                    this.onStatusChange
-                )
-            );
+            // return (
+            //     // <div>
+            //     // <UserData>user = {this.state.selected_user_name} onStatusChange = {this.onStatusChange}</UserData>
+            //     // </div>
+            // );
         } else {
             return '';
         }

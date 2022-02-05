@@ -43,7 +43,6 @@ class HomePage extends React.Component {
 
     async calcNumOfPosts() {
         const serverNumOfPosts = await this.getNumOfPosts();
-        //console.log("In calcNumOfPosts" + serverNumOfPosts + " " + this.state.numOfPosts);
         if (serverNumOfPosts > this.state.numOfPosts) {
             this.setState({
                 newPostNotification: "There new posts!",
@@ -54,7 +53,6 @@ class HomePage extends React.Component {
 
     async calcNumOfMessages() {
         const serverNumOfMessages = await this.getNumOfMessages();
-        console.log("In calcNumOfMessages" + serverNumOfMessages + " " + this.state.numOfMessages);
         if (serverNumOfMessages > this.state.numOfMessages) {
             this.setState({
                 newMessageNotification: "There are new Messages!",
