@@ -114,7 +114,8 @@ class PostPage extends React.Component {
 			throw new Error('Error while fetching posts');
 		}
 		const data = await response.json();
-		return data;
+		this.props.onHide();
+		return data.slice(0, 10);
 	}
 
 	update_state(text_post, posts, token, warning_visable) {

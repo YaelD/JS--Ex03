@@ -6,7 +6,8 @@ class Login extends React.Component {
       this.state = {
         email: '', 
       password: '', 
-      warning_visible : false,
+      warning_visible : false
+      
     };
   
       this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -47,26 +48,6 @@ class Login extends React.Component {
       return false;
     }
 
-    // async handle_login( )
-    // {
-    //   const response = await fetch('http://localhost:2718/social_network/users/login' , 
-    //             {method:'POST', 
-    //              body: JSON.stringify( {password : this.state.password, email : this.state.email}), 
-    //                headers: { 'Content-Type': 'application/json' }
-    //              });
-    //   if ( response.status == 200 )
-    //   {
-    //     const curr_token = (JSON.parse(response.headers.get("Authorization")).token);
-    //     this.state.loginCallback(curr_token);
-    //     //console.log(curr_token);    
-    //   }
-    //   else 
-    //   {
-    //     const err = await response.text();
-    //     alert( err );
-    //   }
-    // }
-    
     render() {
       return (
         <div>

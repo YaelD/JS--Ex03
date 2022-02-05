@@ -7,14 +7,86 @@ class HomePage extends React.Component {
             ADMIN_PAGE: "admin",
             token: props.token,
             currPage: "home",
-            userDetails: props.user
+            userDetails: props.user,
+            numOfPosts: 0,
+            newPostNotification: '',
+            isNewPosts: false,
+            postsIntervalID: 0,
+
+            numOfMessages: 0,
+            newMessageNotification: '',
+
+            messagesIntervalID: 0
         };
         this.renderPage = this.renderPage.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
         this.handleAdmin = this.handleAdmin.bind(this);
+        this.getNumOfPosts = this.getNumOfPosts.bind(this);
+        this.getNumOfMessages = this.getNumOfMessages.bind(this);
+        this.calcNumOfPosts = this.calcNumOfPosts.bind(this);
+        this.hidePostsNotification = this.hidePostsNotification.bind(this);
     }
 
+    async componentDidMount() {
+        this.setState({ numOfPosts: await this.getNumOfPosts() });
+        const postInterval = setInterval(this.calcNumOfPosts, 3000);
+        // const messagesInterval = setInterval(this.getNumOfMessages, 30000);
+        this.setState({
+            postsIntervalID: postInterval
+            // messagesIntervalID : messagesInterval
+        });
+    }
+
+    async calcNumOfPosts() {
+        const serverNumOfPosts = await this.getNumOfPosts();
+        console.log("In calcNumOfPosts" + serverNumOfPosts + " " + this.state.numOfPosts);
+        if (serverNumOfPosts > this.state.numOfPosts) {
+            this.setState({
+                newPostNotification: "There new posts!",
+                numOfPosts: serverNumOfPosts
+            });
+        }
+    }
+
+    hidePostsNotification() {
+        this.setState({
+            newPostNotification: "",
+            numOfPosts: this.state.numOfPosts + 1
+        });
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.messagesIntervalID);
+        clearInterval(this.state.postsIntervalID);
+    }
+
+    async getNumOfPosts() {
+        const response = await fetch('http://localhost:2718/social_network/users/post', { method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': this.state.token }
+        });
+        if (response.status != 200) {
+            throw new Error('Error while fetching posts');
+        }
+        const data = await response.json();
+        return data.length;
+    }
+
+    async getNumOfMessages() {
+        const response = await fetch('http://localhost:2718/social_network/users/message', { method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': this.state.token }
+        });
+        if (response.status != 200) {
+            throw new Error('Error while fetching messages');
+        }
+        const data = await response.json();
+        if (data.length > this.state.numOfMessages) {
+            this.setState({
+                numOfMessages: data.length,
+                newMessage: 'You have new Messages'
+            });
+        }
+    }
     renderPage(page) {
         if (page == this.state.MESSAGE_PAGE) {
             return this.renderMessages();
@@ -26,7 +98,11 @@ class HomePage extends React.Component {
     }
 
     handleHome() {
-        this.setState({ currPage: this.state.HOME_PAGE });
+        this.setState({
+            currPage: this.state.HOME_PAGE,
+            newPostNotification: '',
+            isNewPosts: !this.state.isNewPosts
+        });
     }
     handleMessage() {
         this.setState({ currPage: this.state.MESSAGE_PAGE });
@@ -47,7 +123,7 @@ class HomePage extends React.Component {
     renderPosts() {
         return React.createElement(
             PostPage,
-            { token: this.state.token },
+            { token: this.state.token, onHide: this.hidePostsNotification },
             " "
         );
     }
@@ -55,7 +131,7 @@ class HomePage extends React.Component {
     render() {
         return React.createElement(
             "div",
-            null,
+            { className: "homePageContainer" },
             React.createElement(
                 "div",
                 { className: "topMenu" },
@@ -77,6 +153,15 @@ class HomePage extends React.Component {
                     "div",
                     null,
                     " "
+                ),
+                React.createElement(
+                    "div",
+                    { className: "notifications" },
+                    React.createElement(
+                        "label",
+                        null,
+                        this.state.newPostNotification
+                    )
                 )
             ),
             React.createElement(
