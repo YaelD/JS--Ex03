@@ -54,7 +54,14 @@ class MessagePage extends React.Component
 	constructor(props) 
 	{
 		super(props);
-		this.state = {text_message : '', messagesList: [], token: this.props.token, warning_visable : false, usersList : [], selected_user : ''};
+		this.state = {
+			text_message : '', 
+			messagesList: [], 
+			token: this.props.token, 
+			warning_visable : false, 
+			usersList : [], 
+			selected_user : ''
+		};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);	

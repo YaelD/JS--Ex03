@@ -1,6 +1,4 @@
 
-
-
 class UserData extends React.Component{
     constructor(props){
         super(props);
@@ -8,29 +6,31 @@ class UserData extends React.Component{
             user : this.props.user, 
 
         }
-        this.handle_change = this.handle_change.bind(this);
-        this.on_submit = this.on_submit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
         this.setState({status: this.state.user.status})
     }
 
-    handle_change (event){
+    handleChange (event){
         this.setState({status : event.target.value});
     }
 
-    on_submit(){
-        this.props.onStatusChange(this.state.user.is, this.state.status);
+    onSubmit(){
+        this.props.onStatusChange(this.state.user.id, this.state.status);
     }
 
 
     render(){
         return (
             <div>
+                <div id='user_data'>
                 <label>Name: {this.state.user.name}</label>
                 <label>ID: {this.state.user.id}</label>
                 <label>Email: {this.state.user.email_address}</label>
                 <label>Creation Date: {this.state.user.creation_date}</label>
                 <label>Status: {this.state.user.status}</label>
-                <form onSubmit={this.on_submit}>
+                </div>
+                <form onSubmit={this.onSubmit}>
                 <label>
                 please choose a status:
                 <select value={this.state.user.status} onChange={this.handleChange}>
@@ -41,10 +41,7 @@ class UserData extends React.Component{
                 </select>
                 </label>
                 <input type="submit" value="Change Status" />
-            </form>
-
-
-
+                </form>
             </div>
    
         );
@@ -52,7 +49,107 @@ class UserData extends React.Component{
     }
 
 }
+//-------------------------------------------------------------------------------------
 
+class UsersList extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            users : this.props.users,
+            users_status : 'created', 
+            selected_users_by_status : []
+        }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.handleChangeStatus = this.handleChangeStatus(this);
+        this.getAllUsersWithCurrStatus = this.getAllUsersWithCurrStatus.bind(this);
+    }
+
+    handleChangeStatus(event){
+        const selcted_users_arr = this.getAllUsersWithCurrStatus(event.target.value);
+        this.setState({users_status : event.target.value, selected_users_by_status : selcted_users_arr});
+    }
+
+    getAllUsersWithCurrStatus(status){
+        let selected_users_arr = [];
+        for(let i=0; i < this.state.users.length ; i++){
+            if( this.state.users[i].status == status){
+                selected_users_arr.push(this.state.users[i]);
+            }
+        }
+        return selected_users_arr;
+    }
+
+    handleChange(event){
+    }
+
+    onSubmit(event){
+
+    }
+
+    render(){
+        return (
+            <div>
+                <label>
+                please choose a status:
+                <select value={this.state.users_status} onChange={this.handleChangeStatus}>
+                    <option value="created">Created</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="deleted">Deleted</option>
+                </select>
+                </label>
+                <label>Select a user: </label>
+                <select value = {this.state.selected_users_by_status[0]} onChange={this.handleChangeUserName}>
+                {this.state.usersList.map((user, index) => {return <option key={index} value={user.id}>{user.name}</option>})}
+                </select>
+            </div>
+
+        );                     
+    }
+}
+
+//-------------------------------------------------------------------------------------
+class BroadcastMessage extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            text_message : '',
+            warning_visable : false,
+        }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+		this.setState({text_message : event.target.value, warning_visable : false});
+	}
+
+    handleSubmit(event) {
+		event.preventDefault();
+		if(this.state.text_message != ''){
+            if(this.props.handle_send_message_to_all){
+                this.props.handle_send_message_to_all();
+            }
+		}
+		else{
+			this.setState({ text_message : '', warning_visable : true });
+		}
+	}
+
+    render(){
+        return (
+            <form onSubmit={this.handleSubmit}>
+            <textarea value={this.state.text_message} onChange={this.handleChange} />
+            <input type="submit" value="Send broadcast message" />
+            </form>
+        );
+
+    }
+}
+//-------------------------------------------------------------------------------------
 class AdminPage extends React.Component{
     constructor(props){
         super(props);
