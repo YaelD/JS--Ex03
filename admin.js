@@ -3,7 +3,8 @@ class UserData extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            user : this.props.user
+            user : this.props.user,
+            status: this.props.user.status
         }
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -20,6 +21,8 @@ class UserData extends React.Component{
 	}
 
     handleChange (event){
+        console.log(event.target.value);
+        console.log(this.state.status);
         this.setState({status : event.target.value});
     }
 
@@ -50,7 +53,7 @@ class UserData extends React.Component{
                     <form onSubmit={this.onSubmit}>
                     <label>
                     please choose a status:
-                    <select value={this.state.user.status} onChange={this.handleChange}>
+                    <select value={this.state.status} onChange={this.handleChange}>
                         <option value="created">Created</option>
                         <option value="active">Active</option>
                         <option value="suspended">Suspended</option>
@@ -88,7 +91,7 @@ class UsersList extends React.Component{
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeUserStatus = this.handleChangeUserStatus.bind(this);
         this.getAllUsersWithCurrStatus = this.getAllUsersWithCurrStatus.bind(this);
-        this.onStatusChange = this.onStatusChange.bind(this);
+        //this.onStatusChange = this.onStatusChange.bind(this);
         this.renderUser = this.renderUser.bind(this);
         console.log("ON UserList ctor" + this.state.users);
     }
@@ -135,7 +138,7 @@ class UsersList extends React.Component{
         if(this.state.selected_user != ''){
             return (
                 <div>
-                <UserData user = {this.state.selected_user} onStatusChange = {this.onStatusChange}></UserData>
+                <UserData user = {this.state.selected_user} onStatusChange = { this.props.handleChangeStatus}></UserData>
                 </div>
             );
         }
@@ -144,11 +147,11 @@ class UsersList extends React.Component{
         }
     }
 
-    onStatusChange(user_id, user_status){
-        if(this.props.handle_change_status){
-            this.props.handleChangeStatus(user_id, user_status);
-        }
-    }
+    // onStatusChange(user_id, user_status){
+    //     if(this.props.handle_change_status){
+    //         this.props.handleChangeStatus(user_id, user_status);
+    //     }
+    // }
     
     render(){
         return (
@@ -203,6 +206,7 @@ class BroadcastMessage extends React.Component{
 		if(this.state.text_message != ''){
             if(this.props.handle_send_message_to_all){
                 this.props.handle_send_message_to_all(this.state.text_message);
+                this.setState({text_message : ''});
             }
 		}
 		else{
@@ -242,14 +246,17 @@ class AdminPage extends React.Component{
 	}
 
     async handle_change_status(userID, newStatus){
-        const response = await fetch('http://localhost:2718/admin/users' , 
+        const response = await fetch('http://localhost:2718/social_network/admin/users' , 
         {method:'PUT', 
          body: JSON.stringify( { id: userID, status: newStatus }), 
          headers: { 'Content-Type': 'application/json', 'Authorization' : this.state.token }
          });
         if ( response.status == 200 )
         {
-            await this.handle_get_users()
+            await this.handle_get_users();
+            const text = await response.text();
+            alert( text );
+
         }
         else 
         {
@@ -303,7 +310,7 @@ class AdminPage extends React.Component{
                 <BroadcastMessage handle_send_message_to_all = {this.handle_send_message_to_all}/>
                 <br/>
                 <br/>
-                <UsersList usersList = {this.state.users} handle_change_status = {this.handle_change_status}/>
+                <UsersList usersList = {this.state.users} handleChangeStatus = {this.handle_change_status}/>
             </div>
         );
     }

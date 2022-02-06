@@ -3,7 +3,8 @@ class UserData extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: this.props.user
+            user: this.props.user,
+            status: this.props.user.status
         };
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -20,6 +21,8 @@ class UserData extends React.Component {
     }
 
     handleChange(event) {
+        console.log(event.target.value);
+        console.log(this.state.status);
         this.setState({ status: event.target.value });
     }
 
@@ -80,7 +83,7 @@ class UserData extends React.Component {
                     "please choose a status:",
                     React.createElement(
                         "select",
-                        { value: this.state.user.status, onChange: this.handleChange },
+                        { value: this.state.status, onChange: this.handleChange },
                         React.createElement(
                             "option",
                             { value: "created" },
@@ -128,7 +131,7 @@ class UsersList extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeUserStatus = this.handleChangeUserStatus.bind(this);
         this.getAllUsersWithCurrStatus = this.getAllUsersWithCurrStatus.bind(this);
-        this.onStatusChange = this.onStatusChange.bind(this);
+        //this.onStatusChange = this.onStatusChange.bind(this);
         this.renderUser = this.renderUser.bind(this);
         console.log("ON UserList ctor" + this.state.users);
     }
@@ -173,18 +176,18 @@ class UsersList extends React.Component {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(UserData, { user: this.state.selected_user, onStatusChange: this.onStatusChange })
+                React.createElement(UserData, { user: this.state.selected_user, onStatusChange: this.props.handleChangeStatus })
             );
         } else {
             return '';
         }
     }
 
-    onStatusChange(user_id, user_status) {
-        if (this.props.handle_change_status) {
-            this.props.handleChangeStatus(user_id, user_status);
-        }
-    }
+    // onStatusChange(user_id, user_status){
+    //     if(this.props.handle_change_status){
+    //         this.props.handleChangeStatus(user_id, user_status);
+    //     }
+    // }
 
     render() {
         return React.createElement(
@@ -277,6 +280,7 @@ class BroadcastMessage extends React.Component {
         if (this.state.text_message != '') {
             if (this.props.handle_send_message_to_all) {
                 this.props.handle_send_message_to_all(this.state.text_message);
+                this.setState({ text_message: '' });
             }
         } else {
             this.setState({ text_message: '', warning_visable: true });
@@ -311,12 +315,14 @@ class AdminPage extends React.Component {
     }
 
     async handle_change_status(userID, newStatus) {
-        const response = await fetch('http://localhost:2718/admin/users', { method: 'PUT',
+        const response = await fetch('http://localhost:2718/social_network/admin/users', { method: 'PUT',
             body: JSON.stringify({ id: userID, status: newStatus }),
             headers: { 'Content-Type': 'application/json', 'Authorization': this.state.token }
         });
         if (response.status == 200) {
             await this.handle_get_users();
+            const text = await response.text();
+            alert(text);
         } else {
             const err = await response.text();
             alert(err);
@@ -357,7 +363,7 @@ class AdminPage extends React.Component {
             React.createElement(BroadcastMessage, { handle_send_message_to_all: this.handle_send_message_to_all }),
             React.createElement("br", null),
             React.createElement("br", null),
-            React.createElement(UsersList, { usersList: this.state.users, handle_change_status: this.handle_change_status })
+            React.createElement(UsersList, { usersList: this.state.users, handleChangeStatus: this.handle_change_status })
         );
     }
 }
