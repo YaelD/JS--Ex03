@@ -7,39 +7,61 @@ class UserData extends React.Component{
         }
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        console.log("IN USER DATA c'tor:", this.state.user);
     }
+
+    async componentDidUpdate(prevProps){
+		if(prevProps.user.id != this.props.user.id){
+			console.log("in componenet did Update");
+			this.setState({
+                user: this.props.user
+            })
+		}
+	}
 
     handleChange (event){
         this.setState({status : event.target.value});
     }
 
-    onSubmit(){
-        this.props.onStatusChange(this.props.user.id, this.props.user.status);
+    onSubmit(event){
+        event.preventDefault();
+        this.props.onStatusChange(this.state.user.id, this.state.status);
     }
+
+
 
 
     render(){
         return (
             <div>
                 <div id='user_data'>
-                <label>Name: {this.props.user.name}</label>
-                <label>ID: {this.props.user.id}</label>
-                <label>Email: {this.props.user.email_address}</label>
-                <label>Creation Date: {this.props.user.creation_date}</label>
-                <label>Status: {this.props.user.status}</label>
+                <label>Name: {this.state.user.name} </label>
+                <br/>
+                <label>ID: {this.state.user.id}</label>
+                <br/>
+                <label>Email: {this.state.user.email_address}</label>
+                <br/>
+                <label>Creation Date: {this.state.user.creation_date}</label>
+                <br/>
+                <label>Status: {this.state.user.status}</label>
                 </div>
-                <form onSubmit={this.onSubmit}>
-                <label>
-                please choose a status:
-                <select value={this.props.user.status} onChange={this.handleChange}>
-                    <option value="created">Created</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="deleted">Deleted</option>
-                </select>
-                </label>
-                <input type="submit" value="Change Status" />
-                </form>
+                {
+                    this.state.user.id != 0 ?
+                    <form onSubmit={this.onSubmit}>
+                    <label>
+                    please choose a status:
+                    <select value={this.state.user.status} onChange={this.handleChange}>
+                        <option value="created">Created</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                    </label>
+                    <input type="submit" value="Change Status" />
+                    </form> 
+                    : ''
+
+                }
             </div>
    
         );
@@ -53,12 +75,13 @@ class UsersList extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            users : this.props.users, // this is not working like that
-            users_status : 'created', 
+            users : this.props.usersList, // this is not working like that
+            users_status : 'none', 
             selected_users_by_status : [],
             selected_user_id : '',
             selected_user : '', 
-            warning_visable : false
+            warning_visable : false,
+            is_status_change : false
         }
 
         this.handleChangeSelectedUser = this.handleChangeSelectedUser.bind(this);
@@ -67,45 +90,57 @@ class UsersList extends React.Component{
         this.getAllUsersWithCurrStatus = this.getAllUsersWithCurrStatus.bind(this);
         this.onStatusChange = this.onStatusChange.bind(this);
         this.renderUser = this.renderUser.bind(this);
+        console.log("ON UserList ctor" + this.state.users);
     }
+
+    onComponentMount(){
+        // const selcted_users_arr = this.getAllUsersWithCurrStatus('active');
+        // this.setState({selected_users_by_status : selcted_users_arr});
+
+    }
+
 
 
     handleChangeUserStatus(event){
         const selcted_users_arr = this.getAllUsersWithCurrStatus(event.target.value);
-        this.setState({users_status : event.target.value, selected_users_by_status : selcted_users_arr});
+        this.setState({users_status : event.target.value, selected_users_by_status : selcted_users_arr, 
+            selected_user_id : (selcted_users_arr[0]!= undefined ? selcted_users_arr[0].id : -1 ),
+            selected_user : ''
+         });
+        
     }
 
     getAllUsersWithCurrStatus(status){
         let selected_users_arr = [];
-        for(let i=0; i < this.props.users.length ; i++){
-            if( this.props.users[i].status == status){
-                selected_users_arr.push(this.props.users[i]);
+        for(let i=0; i < this.props.usersList.length ; i++){
+            if( this.props.usersList[i].status == status){
+                selected_users_arr.push(this.props.usersList[i]);
             }
         }
         return selected_users_arr;
     }
 
     handleChangeSelectedUser(event){
+        event.preventDefault();
         this.setState({selected_user_id : event.target.value ,warning_visable : false}); 
     }
 
-    handleSubmit(){
-        const user = this.props.users.find(user=> user.id == this.state.selected_user_id);
-        console.log(user);
+    handleSubmit(event){
+        event.preventDefault();
+        const user = this.props.usersList.find(user=> user.id == this.state.selected_user_id);
         this.setState({selected_user : user});
     }
 
     renderUser(){
         if(this.state.selected_user != ''){
-            console.log(this.state.selected_user);
             return (
                 <div>
-                <UserData>user = {this.state.selected_user} onStatusChange = {this.onStatusChange}</UserData>
+                <UserData user = {this.state.selected_user} onStatusChange = {this.onStatusChange}></UserData>
                 </div>
             );
         }
         else{
-            return '';
+            return ''
         }
     }
 
@@ -117,27 +152,31 @@ class UsersList extends React.Component{
     
     render(){
         return (
-            <form>
-                <label>
-                please choose a status:
-                <select value={this.state.users_status} onChange={this.handleChangeUserStatus}>
-                    <option value="created">Created</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="deleted">Deleted</option>
-                </select>
-                </label>
-                <label>Select a user: </label>
-                <select value = {this.state.selected_user_id} onChange={this.handleChangeSelectedUser}>
-                {this.state.selected_users_by_status.map((user, index) => {return <option key={index} value={user.id}>{user.name}</option>})}
-                </select> 
-                {/* <input type="submit" value="see details" /> */}
-                <button onClick = {this.handleSubmit}> see details </button>
-                <label className = {this.state.warning_visable ? "errorVisible" : "errorInvisible"}>
-         			Please choose a user
-        		</label>                        
-                {this.renderUser()};
-            </form>
+            <div>
+                <form onSubmit = {this.handleSubmit}>
+                    <label>
+                    please choose a status:
+                    <select value={this.state.users_status} onChange={this.handleChangeUserStatus}>
+                        <option value="none" disabled hidden>Select an Status</option>
+                        <option value="created">Created</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                    </label>
+                    <label>Select a user: </label>
+
+                    <select value = {this.state.selected_user_id} onChange={this.handleChangeSelectedUser}>
+                        {this.state.selected_users_by_status.map((user, index) =>  {return <option key={index} value={user.id} >{user.name}</option> } )}
+                    </select> 
+                    { (this.state.users_status!="none" && this.state.selected_user_id != -1) ? 
+                    <input type="submit" value="see details" /> : ''}
+                    <label className = {this.state.warning_visable ? "errorVisible" : "errorInvisible"}>
+                        Please choose a user
+                    </label>                        
+                </form>
+                {this.renderUser()}      
+            </div>
         );                     
     }
 }
@@ -163,7 +202,7 @@ class BroadcastMessage extends React.Component{
 		event.preventDefault();
 		if(this.state.text_message != ''){
             if(this.props.handle_send_message_to_all){
-                this.props.handle_send_message_to_all();
+                this.props.handle_send_message_to_all(this.state.text_message);
             }
 		}
 		else{
@@ -221,10 +260,11 @@ class AdminPage extends React.Component{
     }
 
     async handle_send_message_to_all(message){
-        const response = await fetch('http://localhost:2718/admin/message' , 
-        {method:'POST', 
+        console.log("The token=", message);
+        const response = await fetch('http://localhost:2718/social_network/admin/message' , 
+        {method:'POST',
          body: JSON.stringify( { text: message }), 
-         headers: { 'Content-Type': 'text/plain', 'Authorization' : this.state.token }
+         headers: { 'Content-Type': 'application/json', "Authorization" : this.state.token }
          });
         if ( response.status == 200 )
         {
@@ -263,7 +303,7 @@ class AdminPage extends React.Component{
                 <BroadcastMessage handle_send_message_to_all = {this.handle_send_message_to_all}/>
                 <br/>
                 <br/>
-                <UsersList users = {this.state.users} handle_change_status = {this.handle_change_status}/>
+                <UsersList usersList = {this.state.users} handle_change_status = {this.handle_change_status}/>
             </div>
         );
     }
