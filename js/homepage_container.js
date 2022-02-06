@@ -28,6 +28,8 @@ class HomePage extends React.Component {
         this.hidePostsNotification = this.hidePostsNotification.bind(this);
         this.calcNumOfMessages = this.calcNumOfMessages.bind(this);
         this.hideMessagesNotification = this.hideMessagesNotification.bind(this);
+        this.handleAbout = this.handleAbout.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     async componentDidMount() {
@@ -148,6 +150,18 @@ class HomePage extends React.Component {
         );
     }
 
+    handleAbout() {
+        //TODO: about!!!
+
+
+    }
+
+    handleLogout() {
+        if (confirm("Are sure you want to logout?")) {
+            this.props.logOut();
+        }
+    }
+
     render() {
         return React.createElement(
             "div",
@@ -169,10 +183,16 @@ class HomePage extends React.Component {
                     "button",
                     { onClick: this.handleAdmin },
                     " Admin"
-                ) : React.createElement(
-                    "div",
-                    null,
-                    " "
+                ) : '',
+                React.createElement(
+                    "button",
+                    { onClick: this.handleAbout },
+                    " About"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: this.handleLogout },
+                    " LogOut"
                 ),
                 React.createElement(
                     "div",

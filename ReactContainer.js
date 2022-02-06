@@ -17,6 +17,7 @@ class ReactContainer extends React.Component{
         this.onLoginClick = this.onLoginClick.bind(this);
         this.handle_login = this.handle_login.bind(this);
         this.handle_register = this.handle_register.bind(this);
+        this.handlelogOut =this.handlelogOut.bind(this);
     }
 
     async handle_register(userName, userEmail, userPassword)
@@ -74,12 +75,25 @@ class ReactContainer extends React.Component{
         }
 
     }
+    async handlelogOut(){
+        const response = await fetch('http://localhost:2718/social_network/users/logout' , 
+        {method:'PUT',  
+           headers: { 'Content-Type': 'application/json', 'Authorization' : this.state.token}
+         });
+        if ( response.status != 200 ) {
+            throw new Error ('Error while fetching messages');
+        }
+        const text = await response.text();
+        this.setState({currPage: this.state.LOGIN});
+        alert(text);
+    
+    }
 
     renderHome(){
             
         return (
         <div>
-        <HomePage token = {this.state.token} user = {this.state.user}></HomePage>
+        <HomePage token = {this.state.token} user = {this.state.user} logOut = {this.handlelogOut}></HomePage>
        </div>
         );
     }

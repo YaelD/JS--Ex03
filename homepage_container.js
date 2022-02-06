@@ -28,6 +28,8 @@ class HomePage extends React.Component{
         this.hidePostsNotification = this.hidePostsNotification.bind(this);
         this.calcNumOfMessages = this.calcNumOfMessages.bind(this);
         this.hideMessagesNotification = this.hideMessagesNotification.bind(this);
+        this.handleAbout = this.handleAbout.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     async componentDidMount() {
@@ -158,13 +160,32 @@ class HomePage extends React.Component{
 
 
 
+    handleAbout(){
+        //TODO: about!!!
+        
+
+    }
+
+    handleLogout(){
+        if (confirm("Are sure you want to logout?")) {
+            this.props.logOut();
+          } 
+    }
+
+
+    
+
     render(){
         return (
         <div className = "homePageContainer">
             <div className = "topMenu">
                 <button onClick={this.handleHome}> Home</button>
                 <button onClick={this.handleMessage}> Messages</button>
-                {  this.state.userDetails.id == 0 ? <button onClick={this.handleAdmin}> Admin</button> : <div> </div>} 
+
+                {this.state.userDetails.id == 0 ? <button onClick={this.handleAdmin}> Admin</button> : ''} 
+                <button onClick={this.handleAbout}> About</button>
+                <button onClick={this.handleLogout}> LogOut</button>
+
                 <div className = "notifications">
                     <label>{this.state.newPostNotification}</label>
                     <label>{this.state.newMessageNotification}</label> 
