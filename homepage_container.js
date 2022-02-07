@@ -5,30 +5,35 @@ class HomePage extends React.Component{
             HOME_PAGE : "home",
             MESSAGE_PAGE : "message",
             ADMIN_PAGE : "admin",
-            token : props.token,
+            ABOUT_PAGE : "about",
             currPage : "home",
+            token : props.token,
             userDetails : props.user,
             numOfPosts : 0,
             newPostNotification : '',
             isNewPosts : false,
             postsIntervalID : 0,
-            
             numOfMessages : 0,
             newMessageNotification : '',
             isNewMessages : false,
-            messagesIntervalID : 0
+            messagesIntervalID : 0,
+            showAbout : false
         };
         this.renderPage = this.renderPage.bind(this);
         this.handleHome = this.handleHome.bind(this);
         this.handleMessage = this.handleMessage.bind(this);
         this.handleAdmin = this.handleAdmin.bind(this);
+        this.handleAbout = this.handleAbout.bind(this);
+        this.renderAdmin = this.renderAdmin.bind(this);
+        this.renderMessages = this.renderMessages.bind(this);
+        this.renderPosts = this.renderPosts.bind(this);
+        this.renderAbout = this.renderAbout.bind(this);
         this.getNumOfPosts = this.getNumOfPosts.bind(this);
         this.getNumOfMessages = this.getNumOfMessages.bind(this);
         this.calcNumOfPosts = this.calcNumOfPosts.bind(this);
         this.hidePostsNotification = this.hidePostsNotification.bind(this);
         this.calcNumOfMessages = this.calcNumOfMessages.bind(this);
         this.hideMessagesNotification = this.hideMessagesNotification.bind(this);
-        this.handleAbout = this.handleAbout.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
 
@@ -48,7 +53,7 @@ class HomePage extends React.Component{
         const serverNumOfPosts = await this.getNumOfPosts();
         if(serverNumOfPosts> this.state.numOfPosts){
             this.setState({
-                newPostNotification : "There new posts!",
+                newPostNotification : "There are new posts!",
                  numOfPosts : serverNumOfPosts,
             })
         }
@@ -56,9 +61,10 @@ class HomePage extends React.Component{
 
     async calcNumOfMessages(){
         const serverNumOfMessages = await this.getNumOfMessages();
+        console.log("Num Of Messages: " +serverNumOfMessages + "  " + this.state.numOfMessages);
         if(serverNumOfMessages> this.state.numOfMessages){
             this.setState({
-                newMessageNotification : "There are new Messages!",
+                newMessageNotification : "You have new Messages!",
                 numOfMessages : serverNumOfMessages,
             })
         }
@@ -74,7 +80,7 @@ class HomePage extends React.Component{
     hideMessagesNotification(){
         this.setState({
             newMessageNotification : "",
-            numOfMessages : this.state.numOfMessages+1
+            numOfMessages : this.state.numOfMessages
         });
     }
 
@@ -124,6 +130,9 @@ class HomePage extends React.Component{
         else if(page == this.state.ADMIN_PAGE){
             return this.renderAdmin();
         }
+        else if(page == this.state.ABOUT_PAGE){
+            return this.renderAbout();
+        }
     }
 
     handleHome(){
@@ -158,18 +167,20 @@ class HomePage extends React.Component{
         return (<PostPage token = {this.state.token} onHide = {this.hidePostsNotification} isRefreshed = {this.state.isNewPosts}> </PostPage>);
     }
 
+    renderAbout(){
+        return (<AboutWindow></AboutWindow>);
+    }
+
 
 
     handleAbout(){
-        //TODO: about!!!
-        
-
+        this.setState({currPage : this.state.ABOUT_PAGE});
     }
 
     handleLogout(){
         if (confirm("Are sure you want to logout?")) {
             this.props.logOut();
-          } 
+        } 
     }
 
 
@@ -181,17 +192,18 @@ class HomePage extends React.Component{
             <div className = "topMenu">
                 <button onClick={this.handleHome}> Home</button>
                 <button onClick={this.handleMessage}> Messages</button>
-
                 {this.state.userDetails.id == 0 ? <button onClick={this.handleAdmin}> Admin</button> : ''} 
                 <button onClick={this.handleAbout}> About</button>
                 <button onClick={this.handleLogout}> LogOut</button>
-
+                {this.state.showAbout ? <AboutWindow></AboutWindow> :''}
                 <div className = "notifications">
-                    <label>{this.state.newPostNotification}</label>
-                    <label>{this.state.newMessageNotification}</label> 
+                    <label onClick = {this.handleHome}>{this.state.newPostNotification}</label>
+                    <br/>
+                    <label onClick = {this.handleMessage}>{this.state.newMessageNotification}</label> 
                 </div>
+
             </div>
-            <div>
+            <div className = "page">
                 {this.renderPage(this.state.currPage)}
             </div>
         </div>
@@ -199,3 +211,22 @@ class HomePage extends React.Component{
     }
 }
 
+class AboutWindow extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+
+    render(){
+
+        return(
+         <div >
+            This is our app <br/> Hope you will enjoy it!
+        </div>
+
+        );
+    }
+}

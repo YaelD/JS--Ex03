@@ -129,8 +129,8 @@ class PostPage extends React.Component
 
 
 	render() {
-		return   <div>
-					<form onSubmit={this.handleSubmit}>
+		return   <div className= "post_page">
+					<form onSubmit={this.handleSubmit} className = "write_post">
         			<label>
           				Write a post:
 					</label>
@@ -141,7 +141,7 @@ class PostPage extends React.Component
 					<label className = {this.state.warning_visable ? "errorVisible" : "errorInvisible"}>
          				 Please write something in the post
         			</label>
-					<div>
+					<div className = "Posts">
 						<PostList handle_get_posts = {this.handle_get_posts}  posts = {this.state.posts}/>
 					</div>
 				  </div>

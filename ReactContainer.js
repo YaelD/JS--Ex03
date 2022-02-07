@@ -92,9 +92,7 @@ class ReactContainer extends React.Component{
     renderHome(){
             
         return (
-        <div>
         <HomePage token = {this.state.token} user = {this.state.user} logOut = {this.handlelogOut}></HomePage>
-       </div>
         );
     }
 
